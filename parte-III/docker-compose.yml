@@ -1,0 +1,111 @@
+version: '3.4'
+
+services:
+
+  mysql_server:
+    build: basedatos/
+    image: wjma90/taller-basedatos:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=toor
+      - MYSQL_DATABASE=demobd
+      - MYSQL_PASSWORD=toor
+      - MYSQL_ROOT_HOST=%
+    volumes: 
+      - my-data-bd:/var/lib/mysql/
+    ports:
+      - "3310:3306"
+    command: --default-authentication-plugin=mysql_native_password
+    networks:
+      - backend
+    deploy:
+      replicas: 1
+      resources: 
+        limits:
+          cpus: "0.5"
+          memory: 512M
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints: [node.role == worker]
+
+  apipersona:
+    build: api-persona/
+    image: wjma90/apipersona:latest
+    environment: 
+      - JAVA_OPTS=""
+      - host=mysql_server
+      - port=3306
+      - database=demobd
+      - username=root
+      - password=toor
+    depends_on:
+      - mysql_server
+    #Si no especifico un puerto host, se creará uno aleatorio
+    ports:
+      - "8000:8080"
+    restart: on-failure
+    #Sobreescribiendo el entrypoint del dockerfile
+    entrypoint: dockerize -wait tcp://mysql_server:3306 -timeout 10m java -jar /workspace/app.jar
+    networks:
+      - backend
+    deploy:
+      replicas: 1
+      resources: 
+        limits:
+          cpus: "0.1"
+          memory: 128M
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints: [node.role == worker]
+
+  apipreferencia:
+    build: api-preferencia/
+    image: wjma90/apipreferencia:latest
+    environment: 
+      - JAVA_OPTS=""
+      - host=mysql_server
+      - port=3306
+      - database=demobd
+      - username=root
+      - password=toor
+      - url_apipersona=apipersona
+      - port_apipersona=8080
+    depends_on: 
+      - mysql_server
+      - apipersona
+    ports:
+       - "9000:8080"
+    restart: on-failure
+    entrypoint: dockerize -wait tcp://mysql_server:3306 -timeout 10m java -jar /workspace/app.jar
+    networks:
+      - backend
+    deploy:
+      replicas: 1
+      resources: 
+        limits:
+          cpus: "0.2"
+          memory: 128M
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints: [node.role == worker]
+
+  visualizer:
+    image: dockersamples/visualizer
+    ports:
+      - "10000:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints: [node.role == manager]
+
+volumes:
+  my-data-bd:
+
+networks:
+  backend: 
