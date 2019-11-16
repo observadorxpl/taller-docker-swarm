@@ -1,7 +1,6 @@
 basic:
     mvn spring-boot:run -f taller-docker/demo-docker/pom.xml \
-    -Dspring-boot.run.arguments=--host=localhost,--port=3310,--database=demobd,\
-    --username=root,--password=toor
+    -Dspring-boot.run.arguments=--host=localhost,--port=3306,--database=demobd,--username=root,--password=toor
 
     docker run -d -p 3310:3306 --name mysql_server imgbasedatos:latest
 
