@@ -1,3 +1,5 @@
+USE demobd;
+
 INSERT INTO personas VALUES(1,"william", 29, 'M');
 INSERT INTO personas VALUES(2,"pepito", 30, 'M');
 INSERT INTO personas VALUES(3,"fulana", 31, 'F');
