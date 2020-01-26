@@ -5,6 +5,7 @@ USE demobd;
 SET foreign_key_checks = 0;
 
 DROP TABLE IF EXISTS personas;
+DROP TABLE IF EXISTS preferencias;
 
 SET foreign_key_checks = 1;
 
