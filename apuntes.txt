@@ -1,13 +1,14 @@
 basic:
-    mvn spring-boot:run -f taller-docker/demo-docker/pom.xml \
-    -Dspring-boot.run.arguments=--host=localhost,--port=3306,--database=demobd,--username=root,--password=toor
+    mvn spring-boot:run -f parte-I/api-persona/pom.xml -Dspring-boot.run.arguments=--host=localhost,--port=3311,--database=demobd,--username=root,--password=toor
 
     docker run -d -p 3310:3306 --name mysql_server imgbasedatos:latest
 
     docker run -d -p 9000:8080 --name apipersona --link mysql_server imgapipersona:latest
 
-    docker run -d -p 8000:8080 --name apipreferencia --link mysql_server \
-    --link apipersona:apipersona imgapipreferencia:latest
+    docker run -d -p 8000:8080 --name apipreferencia --link <ID_container_mysql>:mysql_server2 
+    --link <ID_container_apipersona>:apipersona imgapipreferencia:latest
+
+    http://HOST:PORT/api/preferencias/persona/{idPersona}
 
 network:
     docker network create --driver bridge testing

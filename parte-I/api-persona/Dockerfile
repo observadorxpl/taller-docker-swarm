@@ -9,5 +9,5 @@ ENV database="demobd"
 ENV username="root"
 ENV password="toor"
 
-ENTRYPOINT exec java -Djava.security.egd=file:/dev/./urandom -jar /workspace/app.jar
+ENTRYPOINT exec java -jar /workspace/app.jar
 EXPOSE 8080
