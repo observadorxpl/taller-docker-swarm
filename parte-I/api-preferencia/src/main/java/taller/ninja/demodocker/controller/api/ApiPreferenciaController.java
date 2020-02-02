@@ -39,7 +39,7 @@ public class ApiPreferenciaController {
 		try {
 			ResponseEntity<List<Preferencia>> rpta =  new ResponseEntity<List<Preferencia>>(
 				service.obtenerPreferenciaPorPersona(idPersona), HttpStatus.OK);
-			logger.info("[listar] Devolucion preferencia de persona {0} correcta", idPersona);
+			logger.info("[listar] Devolucion preferencia de persona " + idPersona + " correcta");
 			return rpta;
 		}catch(PersonaNotFoundException e){
 			ResponseEntity<List<Preferencia>> rpta =  new ResponseEntity<List<Preferencia>>(

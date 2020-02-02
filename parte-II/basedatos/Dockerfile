@@ -1,4 +1,4 @@
-FROM mysql:latest
+FROM mysql:5.7.24
 LABEL maintainer="w.marchanaranda@gmail.com"
 #WORKDIR /workspace
 #Podemos usar ADD o COPY

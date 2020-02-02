@@ -5,9 +5,9 @@ services:
   mysql_server_temporal:
     #Ignorado cuando se usa en modo swarm (swarm usa imágenes de un registry)
     build: ../basedatos/
-    image: wjma90/mimysql:latest
+    image: wjma90/mawsonline-mysql:latest
     environment:
-      - MYSQL_ROOT_PASSWORD=toor
+      - MYSQL_ROOT_PASSWORD=12345678
       - MYSQL_DATABASE=demobd
       - MYSQL_PASSWORD=toor
       - MYSQL_ROOT_HOST=%
@@ -18,19 +18,17 @@ services:
     #Ignorado cuando se usa en swarm mode (usar restart_policy)
     restart: on-failure
     command: --default-authentication-plugin=mysql_native_password
-    networks:
-      - backend
 
   apipersona:
     build: ../api-persona/
-    image: wjma90/apipersona:latest
+    image: wjma90/mawsonline-api_persona:latest
     environment: 
       - JAVA_OPTS=""
       - host=mysql_server_temporal
       - port=3306
       - database=demobd
       - username=root
-      - password=toor
+      - password=12345678
     depends_on:
       - mysql_server_temporal
     #Si no especifico un puerto host, se creará uno aleatorio
@@ -39,19 +37,17 @@ services:
     restart: on-failure
     #Sobreescribiendo el entrypoint del dockerfile
     entrypoint: java -jar /workspace/app.jar
-    networks:
-      - backend
 
   apipreferencia:
     build: ../api-preferencia/
-    image: wjma90/apipreferencia:latest
+    image: wjma90/mawsonline-api_preferencia:latest
     environment: 
       - JAVA_OPTS=""
       - host=mysql_server_temporal
       - port=3306
       - database=demobd
       - username=root
-      - password=toor
+      - password=12345678
       - url_apipersona=apipersona
       - port_apipersona=8080
     depends_on: 
@@ -61,11 +57,6 @@ services:
        - "8080"
     restart: on-failure
     entrypoint: java -jar /workspace/app.jar
-    networks:
-      - backend
 
 volumes:
   my-data:
-
-networks:
-  backend: 
